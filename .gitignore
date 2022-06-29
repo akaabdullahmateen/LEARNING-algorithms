@@ -103,6 +103,7 @@ Thumbs.db
 *.out
 *.app
 
-# Test files
+# Ignored files
 test.cpp
 boost.sh
+temp.md
