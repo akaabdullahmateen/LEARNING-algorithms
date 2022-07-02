@@ -26,6 +26,16 @@
 * 10. However, if multiple spaces are used for separation, it is not an error, and program will function as normal
 * 11. Input puzzle is read from input.txt only
 * 13. There are no spaces at the start and end of each line in puzzle
+* 14. Puzzle has square dimensions
+*/
+
+/*
+* Algorithm
+*
+* 1. Generate puzzle from input file
+* 2. Generate vocabulary list from vocabulary file
+* 3. Check all triples (row, column, orientation) for the presense of word from vocabulary
+* 4. On detection, print it to the standard output stream
 */
 
 #include <fstream>
@@ -39,8 +49,6 @@ class Puzzle{
 private:
     std::vector<std::vector<char>> puzzle;
     std::vector<std::string> vocabulary;
-    std::string::size_type max;
-    std::vector<char>::size_type length;
 
 public:
     Puzzle(std::string ifilename = "input.txt", std::string vfilename = "vocabulary.txt"){
@@ -56,16 +64,13 @@ public:
                 read.erase(0, pos + 1);
             }
             line.push_back(read[0]);
-            length = line.size();
             puzzle.push_back(line);
             read = std::string{};
         }
         ifile.close();
-        max = 0;
         std::ifstream vfile(vfilename);
         while(getline(vfile, read)){
             if(read.empty()) continue;
-            if(read.size() > max) max = read.size();
             vocabulary.push_back(read);
         }
         vfile.close();
@@ -79,15 +84,75 @@ public:
         std::cout << std::endl;
     }
 
-    void solve() const{
-        std::string word("that");
-        for(const std::vector<char> &line : puzzle){
-            for(std::vector<char>::size_type i = 0; i < max; ++i){
-                std::string word;
-                for(std::vector<char>::size_type j = 0; j <= i; ++j){
-                    word += line[j];
+    void solve() const{ 
+        std::vector<std::vector<char>>::size_type imin = 0;
+        std::vector<char>::size_type jmin = 0;
+        std::vector<std::vector<char>>::size_type imax = puzzle.size();
+        std::vector<char>::size_type jmax = puzzle[0].size();
+
+        for(std::vector<std::vector<char>>::size_type i = 0; i < imax; ++i){
+            for(std::vector<char>::size_type j = 0; j < jmax; ++j){
+                for(std::vector<char>::size_type k = j; k < jmax; ++k){
+                    std::string word;
+                    for(std::vector<char>::size_type l = j; l <= k; ++l){
+                        word += puzzle[i][l];
+                    }
+                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
                 }
-                if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                for(std::vector<char>::size_type k = j; k < jmax; ++k){
+                    std::string word;
+                    for(std::vector<char>::size_type l = j; l <= k; ++l){
+                        if((i + l - j) == imax) break;
+                        word += puzzle[i + l - j][l];
+                    }
+                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                }
+                for(std::vector<char>::size_type k = i; k < imax; ++k){
+                    std::string word;
+                    for(std::vector<char>::size_type l = i; l <= k; ++l){
+                        word += puzzle[l][j];
+                    }
+                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                }
+                for(std::vector<char>::size_type k = j; k < jmax; --k){
+                    std::string word;
+                    for(std::vector<char>::size_type l = j; l >= k; --l){
+                        if((i - l + j) == imax) break;
+                        word += puzzle[i - l + j][l];
+                    }
+                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                }
+                for(std::vector<char>::size_type k = j; k < jmax; --k){
+                    std::string word;
+                    for(std::vector<char>::size_type l = j; l >= k; --l){
+                        if((i - l + j) == imax) break;
+                        word += puzzle[i][l];
+                    }
+                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                }
+                auto limit = ((i < j) ? i : j);
+                for(std::vector<char>::size_type k = 0; k <= limit; ++k){
+                    std::string word;
+                    for(std::vector<char>::size_type l = 0; l <= k; ++l){
+                        word += puzzle[i - l][j - l];
+                    }
+                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                }
+                for(std::vector<char>::size_type k = 0; k < i; ++k){
+                    std::string word;
+                    for(std::vector<char>::size_type l = 0; l <= k; ++l){
+                        word += puzzle[i - l][j];
+                    }
+                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                }
+                limit = (((i + 1) < (jmax - j)) ? i + 1 : jmax - j);
+                for(std::vector<char>::size_type k = 0; k < limit; ++k){
+                    std::string word;
+                    for(std::vector<char>::size_type l = 0; l <= k; ++l){
+                        word += puzzle[i - l][j + l];
+                    }
+                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                }
             }
         }
     }
