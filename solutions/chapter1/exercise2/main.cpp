@@ -44,119 +44,113 @@
 #include <iostream>
 #include <algorithm>
 
-class Puzzle{
+#include "puzzle.h"
 
-private:
-    std::vector<std::vector<char>> puzzle;
-    std::vector<std::string> vocabulary;
-
-public:
-    Puzzle(std::string ifilename = "input.txt", std::string vfilename = "vocabulary.txt"){
-        std::string read;
-        const std::string SEPARATOR(" ");
-        std::ifstream ifile(ifilename);
-        std::string::size_type pos;
-        while(getline(ifile, read)){
-            if(read.empty()) continue;
-            std::vector<char> line;
-            while(pos = read.find(SEPARATOR) != std::string::npos){
-                line.push_back(read[0]);
-                read.erase(0, pos + 1);
-            }
+Puzzle::Puzzle(std::string ifilename, std::string vfilename){
+    std::string read;
+    const std::string SEPARATOR(" ");
+    std::ifstream ifile(ifilename);
+    std::string::size_type pos;
+    while(getline(ifile, read)){
+        if(read.empty()) continue;
+        std::vector<char> line;
+        while(pos = read.find(SEPARATOR) != std::string::npos){
             line.push_back(read[0]);
-            puzzle.push_back(line);
-            read = std::string{};
+            read.erase(0, pos + 1);
         }
-        ifile.close();
-        std::ifstream vfile(vfilename);
-        while(getline(vfile, read)){
-            if(read.empty()) continue;
-            vocabulary.push_back(read);
-        }
-        vfile.close();
+        line.push_back(read[0]);
+        puzzle.push_back(line);
+        read = std::string{};
     }
+    ifile.close();
+    std::ifstream vfile(vfilename);
+    while(getline(vfile, read)){
+        if(read.empty()) continue;
+        vocabulary.push_back(read);
+    }
+    vfile.close();
+}
 
-    void print() const{
-        for(const std::vector<char> &line : puzzle){
-            for(const char c : line) std::cout << c << " ";
-            std::cout << std::endl;
-        }
+void Puzzle::print() const{
+    for(const std::vector<char> &line : puzzle){
+        for(const char c : line) std::cout << c << " ";
         std::cout << std::endl;
     }
+    std::cout << std::endl;
+}
 
-    void solve() const{ 
-        std::vector<std::vector<char>>::size_type imin = 0;
-        std::vector<char>::size_type jmin = 0;
-        std::vector<std::vector<char>>::size_type imax = puzzle.size();
-        std::vector<char>::size_type jmax = puzzle[0].size();
+void Puzzle::solve() const{ 
+    std::vector<std::vector<char>>::size_type imin = 0;
+    std::vector<char>::size_type jmin = 0;
+    std::vector<std::vector<char>>::size_type imax = puzzle.size();
+    std::vector<char>::size_type jmax = puzzle[0].size();
 
-        for(std::vector<std::vector<char>>::size_type i = 0; i < imax; ++i){
-            for(std::vector<char>::size_type j = 0; j < jmax; ++j){
-                for(std::vector<char>::size_type k = j; k < jmax; ++k){
-                    std::string word;
-                    for(std::vector<char>::size_type l = j; l <= k; ++l){
-                        word += puzzle[i][l];
-                    }
-                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+    for(std::vector<std::vector<char>>::size_type i = 0; i < imax; ++i){
+        for(std::vector<char>::size_type j = 0; j < jmax; ++j){
+            for(std::vector<char>::size_type k = j; k < jmax; ++k){
+                std::string word;
+                for(std::vector<char>::size_type l = j; l <= k; ++l){
+                    word += puzzle[i][l];
                 }
-                for(std::vector<char>::size_type k = j; k < jmax; ++k){
-                    std::string word;
-                    for(std::vector<char>::size_type l = j; l <= k; ++l){
-                        if((i + l - j) == imax) break;
-                        word += puzzle[i + l - j][l];
-                    }
-                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+            }
+            for(std::vector<char>::size_type k = j; k < jmax; ++k){
+                std::string word;
+                for(std::vector<char>::size_type l = j; l <= k; ++l){
+                    if((i + l - j) == imax) break;
+                    word += puzzle[i + l - j][l];
                 }
-                for(std::vector<char>::size_type k = i; k < imax; ++k){
-                    std::string word;
-                    for(std::vector<char>::size_type l = i; l <= k; ++l){
-                        word += puzzle[l][j];
-                    }
-                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+            }
+            for(std::vector<char>::size_type k = i; k < imax; ++k){
+                std::string word;
+                for(std::vector<char>::size_type l = i; l <= k; ++l){
+                    word += puzzle[l][j];
                 }
-                for(std::vector<char>::size_type k = j; k < jmax; --k){
-                    std::string word;
-                    for(std::vector<char>::size_type l = j; l >= k; --l){
-                        if((i - l + j) == imax) break;
-                        word += puzzle[i - l + j][l];
-                    }
-                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+            }
+            for(std::vector<char>::size_type k = j; k < jmax; --k){
+                std::string word;
+                for(std::vector<char>::size_type l = j; l >= k; --l){
+                    if((i - l + j) == imax) break;
+                    word += puzzle[i - l + j][l];
                 }
-                for(std::vector<char>::size_type k = j; k < jmax; --k){
-                    std::string word;
-                    for(std::vector<char>::size_type l = j; l >= k; --l){
-                        if((i - l + j) == imax) break;
-                        word += puzzle[i][l];
-                    }
-                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+            }
+            for(std::vector<char>::size_type k = j; k < jmax; --k){
+                std::string word;
+                for(std::vector<char>::size_type l = j; l >= k; --l){
+                    if((i - l + j) == imax) break;
+                    word += puzzle[i][l];
                 }
-                auto limit = ((i < j) ? i : j);
-                for(std::vector<char>::size_type k = 0; k <= limit; ++k){
-                    std::string word;
-                    for(std::vector<char>::size_type l = 0; l <= k; ++l){
-                        word += puzzle[i - l][j - l];
-                    }
-                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+            }
+            auto limit = ((i < j) ? i : j);
+            for(std::vector<char>::size_type k = 0; k <= limit; ++k){
+                std::string word;
+                for(std::vector<char>::size_type l = 0; l <= k; ++l){
+                    word += puzzle[i - l][j - l];
                 }
-                for(std::vector<char>::size_type k = 0; k < i; ++k){
-                    std::string word;
-                    for(std::vector<char>::size_type l = 0; l <= k; ++l){
-                        word += puzzle[i - l][j];
-                    }
-                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+            }
+            for(std::vector<char>::size_type k = 0; k < i; ++k){
+                std::string word;
+                for(std::vector<char>::size_type l = 0; l <= k; ++l){
+                    word += puzzle[i - l][j];
                 }
-                limit = (((i + 1) < (jmax - j)) ? i + 1 : jmax - j);
-                for(std::vector<char>::size_type k = 0; k < limit; ++k){
-                    std::string word;
-                    for(std::vector<char>::size_type l = 0; l <= k; ++l){
-                        word += puzzle[i - l][j + l];
-                    }
-                    if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+                if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
+            }
+            limit = (((i + 1) < (jmax - j)) ? i + 1 : jmax - j);
+            for(std::vector<char>::size_type k = 0; k < limit; ++k){
+                std::string word;
+                for(std::vector<char>::size_type l = 0; l <= k; ++l){
+                    word += puzzle[i - l][j + l];
                 }
+                if(std::find(vocabulary.begin(), vocabulary.end(), word) != vocabulary.end()) std::cout << word << std::endl;
             }
         }
     }
-};
+}
 
 int main(){
     Puzzle puzzle;
