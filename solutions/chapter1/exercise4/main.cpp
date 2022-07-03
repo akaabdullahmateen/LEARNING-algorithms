@@ -23,6 +23,8 @@
 #include <string>
 #include <iostream>
 
+#include "header.h"
+
 std::string readfile(std::string filename){
     std::string final;
     std::string line;
@@ -34,12 +36,12 @@ std::string readfile(std::string filename){
     return final;
 }
 
-bool contains(std::string str, std::string::size_type pos = 0){
+bool contains(std::string str, std::string::size_type pos){
     if(str.find("#include", pos) == std::string::npos) return false;
     return true;
 }
 
-std::string get_filename(std::string str, std::string::size_type pos = 0){
+std::string get_filename(std::string str, std::string::size_type pos){
     std::string::size_type index = str.find("#include", pos);
     index += 8;
     while(std::isspace(str[index])) ++index;
@@ -48,7 +50,7 @@ std::string get_filename(std::string str, std::string::size_type pos = 0){
     return filename;
 }
 
-std::string &replace(std::string &original, std::string::size_type pos = 0){
+std::string &replace(std::string &original, std::string::size_type pos){
     std::string filename = get_filename(original);
     std::string file = readfile(filename);
     std::string::size_type index = original.find("#include", pos);
