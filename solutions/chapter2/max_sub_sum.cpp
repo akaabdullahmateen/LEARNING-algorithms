@@ -56,14 +56,15 @@ int maxSumRec(const std::vector<int> &v, std::vector<int>::size_type left, std::
 {
     if(left == right)
         if(v[left] > 0)
-            return a[left];
-        return 0;
+            return v[left];
+        else
+            return 0;
     std::vector<int>::size_type center = (left + right) / 2;
     int maxLeftSum = maxSumRec(v, left, center);
     int maxRightSum = maxSumRec(v, center + 1, right);
     int maxLeftBorderSum = 0;
     int leftBorderSum = 0;
-    for(std::vector<int>::size_t idx = center; idx >= left; --idx)
+    for(std::vector<int>::size_type idx = center; idx < v.size(); --idx)
     {
         leftBorderSum += v[idx];
         if(leftBorderSum > maxLeftBorderSum)
