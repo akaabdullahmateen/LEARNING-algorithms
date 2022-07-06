@@ -12,12 +12,11 @@ std::size_t cubeSum(std::size_t n)
 
 int main()
 {
+    std::string expansion;
     for(std::size_t i = 1; i < 10; ++i)
     {
-        std::size_t j = 1;
-        for(; j < i; ++j)
-            std::cout << j << "^3 + ";
-        std::cout << j << "^3 :" << std::endl;
+        expansion += std::to_string(i) + "^3 + ";
+        std::cout << expansion << "\b\b:" << std::endl;
         std::cout << cubeSum(i) << std::endl;
     }
     return 0;
