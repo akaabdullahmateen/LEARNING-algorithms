@@ -1,12 +1,13 @@
 #include <iostream>
+#include <cmath>
 
 #define N 10
 
 std::size_t fibonacci(std::size_t n)
 {
-    if(n <= 1)
-        return 1;
-    return fibonacci(n - 1) + fibonacci(n - 2);
+    double phi = 1.618033988749895;
+    double psi = -0.6180339887498948;
+    return (std::pow(phi, n) - std::pow(psi, n)) / (phi - psi);
 }
 
 int main()
