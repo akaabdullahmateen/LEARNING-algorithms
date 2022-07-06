@@ -2,22 +2,16 @@
 
 #include <iostream>
 
-std::size_t cubeSum(std::size_t n)
-{
-    std::size_t partialSum = 0;
-    for(std::size_t i = 0; i <= n; ++i)
-        partialSum += i * i * i;
-    return partialSum;
-}
-
 int main()
 {
     std::string expansion;
+    std::size_t partialSum = 0;
     for(std::size_t i = 1; i < 10; ++i)
     {
         expansion += std::to_string(i) + "^3 + ";
         std::cout << expansion << "\b\b:" << std::endl;
-        std::cout << cubeSum(i) << std::endl;
+        partialSum += i * i * i;
+        std::cout << partialSum << std::endl;
     }
     return 0;
 }
