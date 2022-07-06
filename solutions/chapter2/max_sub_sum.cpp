@@ -49,7 +49,17 @@ int maxSubSum3(const std::vector<int> &v)
 
 int maxSubSum4(const std::vector<int> &v)
 {
-    return 0;
+    int maxSum = 0;
+    int thisSum = 0;
+    for(std::vector<int>::size_type idx = 0; idx < v.size(); ++idx)
+    {
+        thisSum += v[idx];
+        if(thisSum > maxSum)
+            maxSum = thisSum;
+        else if(thisSum < 0)
+            thisSum = 0;
+    }
+    return maxSum;
 }
 
 int maxSumRec(const std::vector<int> &v, std::vector<int>::size_type left, std::vector<int>::size_type right)
