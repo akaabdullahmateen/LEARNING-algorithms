@@ -94,9 +94,9 @@ int maxSumRec(const std::vector<int> &v, std::vector<int>::size_type left, std::
 int main()
 {
     const std::vector<int> v {-2, 11, -4, 13, -5, -2};
-    std::cout << "ALGORITHM 1 : " << maxSubSum1(v) << std::endl;
-    std::cout << "ALGORITHM 2 : " << maxSubSum2(v) << std::endl;
-    std::cout << "ALGORITHM 3 : " << maxSubSum3(v) << std::endl;
-    std::cout << "ALGORITHM 4 : " << maxSubSum4(v) << std::endl;
+    std::cout << "[BRUTE FORCE] \t\t\t: " << maxSubSum1(v) << std::endl;
+    std::cout << "[OPTIMIZED BRUTE FORCE] \t: " << maxSubSum2(v) << std::endl;
+    std::cout << "[RECURSION] \t\t\t: " << maxSubSum3(v) << std::endl;
+    std::cout << "[LINEAR] \t\t\t: " << maxSubSum4(v) << std::endl;
     return 0;
 }
