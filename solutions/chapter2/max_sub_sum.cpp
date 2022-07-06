@@ -18,7 +18,18 @@ int maxSubSum1(const std::vector<int> &v)
 
 int maxSubSum2(const std::vector<int> &v)
 {
-    return 0;
+    int maxSum = 0;
+    for(std::size_t begin = 0; begin < v.size(); ++begin)
+    {
+        int thisSum = 0;
+        for(std::size_t end = begin; end < v.size(); ++end)
+        {
+            thisSum += v[end];
+            if(thisSum > maxSum)
+                maxSum = thisSum;
+        }
+    }
+    return maxSum;
 }
 
 int maxSubSum3(const std::vector<int> &v)
