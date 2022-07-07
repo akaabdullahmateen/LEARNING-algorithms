@@ -1,4 +1,8 @@
 #include <vector>
+#include <chrono>
+#include <iomanip>
+#include <ctime>
+#include <cstdlib>
 #include <iostream>
 
 #include "header.h"
@@ -74,7 +78,7 @@ int maxSumRec(const std::vector<int> &v, std::vector<int>::size_type left, std::
     int maxRightSum = maxSumRec(v, center + 1, right);
     int maxLeftBorderSum = 0;
     int leftBorderSum = 0;
-    for(std::vector<int>::size_type idx = center; idx < v.size(); --idx)
+    for(std::vector<int>::difference_type idx = center; idx > left; --idx)
     {
         leftBorderSum += v[idx];
         if(leftBorderSum > maxLeftBorderSum)
@@ -91,12 +95,56 @@ int maxSumRec(const std::vector<int> &v, std::vector<int>::size_type left, std::
     return max3(maxLeftSum, maxRightSum, maxLeftBorderSum + maxRightBorderSum);
 }
 
+void stopwatch(int (*maxSubSumN)(const std::vector<int>&), const std::vector<int> &v)
+{
+    std::chrono::time_point start = std::chrono::steady_clock::now();
+    std::cout << maxSubSumN(v) << std::endl;
+    std::chrono::time_point end = std::chrono::steady_clock::now();
+    std::chrono::duration<double> runtime = end - start;
+    std::cout << "(time) : " << std::fixed << std::setprecision(9) << std::left << std::setw(9) << runtime.count();
+}
+
+int randInt()
+{
+    return std::rand() % 101 - 50;
+}
+
+void populate(std::vector<int> &v)
+{
+    for(int &i : v)
+        i = randInt();
+}
+
 int main()
 {
-    const std::vector<int> v {-2, 11, -4, 13, -5, -2};
-    std::cout << "[BRUTE FORCE] \t\t\t: " << maxSubSum1(v) << std::endl;
-    std::cout << "[OPTIMIZED BRUTE FORCE] \t: " << maxSubSum2(v) << std::endl;
-    std::cout << "[RECURSION] \t\t\t: " << maxSubSum3(v) << std::endl;
-    std::cout << "[LINEAR] \t\t\t: " << maxSubSum4(v) << std::endl;
+    std::srand(std::time(NULL));
+    std::vector<int> small(1000);
+    std::vector<int> big(10000);
+    populate(small);
+    populate(big);
+    std::cout << "[BRUTE FORCE] \t\t\t: ";
+    stopwatch(maxSubSum1, small);
+    std::cout << std::endl;
+    std::cout << "[BRUTE FORCE] \t\t\t: ";
+    //stopwatch(maxSubSum1, big); // <-- Commented out because it would take too long
+    std::cout << std::endl;
+    std::cout << "[OPTIMIZED BRUTE FORCE] \t: ";
+    stopwatch(maxSubSum2, small);
+    std::cout << std::endl;
+    std::cout << "[OPTIMIZED BRUTE FORCE] \t: ";
+    stopwatch(maxSubSum2, big);
+    std::cout << std::endl;
+    std::cout << "[DIVIDE AND CONQUER] \t\t: ";
+    stopwatch(maxSubSum3, small);
+    std::cout << std::endl;
+    std::cout << "[DIVIDE AND CONQUER] \t\t: ";
+    stopwatch(maxSubSum3, big);
+    std::cout << std::endl;
+    std::cout << "[LINEAR] \t\t\t: ";
+    stopwatch(maxSubSum4, small);
+    std::cout << std::endl;
+    std::cout << "[LINEAR] \t\t\t: ";
+    stopwatch(maxSubSum4, big);
+    std::cout << std::endl;
     return 0;
 }
