@@ -9,8 +9,8 @@ int64 pow(int64 base, std::size_t n)
     if(!n)
         return 1;
     if(n % 2)
-        return pow(base, n / 2) * pow(base, n / 2) * base;
-    return pow(base, n / 2) * pow(base, n / 2);
+        return pow(base, n - 1) * base;
+    return pow(base * base, n / 2);
 }
 
 int main()
