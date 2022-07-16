@@ -1,3 +1,6 @@
+#ifndef VECTOR_H
+#define VECTOR_H
+
 #include <algorithm>
 
 template <typename Object>
@@ -65,3 +68,5 @@ public:
         delete[] t_objects;
     }
 };
+
+#endif
