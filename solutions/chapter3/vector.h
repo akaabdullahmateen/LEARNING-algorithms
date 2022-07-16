@@ -6,11 +6,14 @@
 template <typename Object>
 class Vector
 {
+
+private:
     std::size_t _size;
     std::size_t _capacity;
+    Object *_objects;
 
 public:
-    explicit Vector(std::size_t m_size = 0) : _size(m_size), _capacity{m_size + SPARE_CAPACITY}
+    explicit Vector(std::size_t m_size = 0) : _size(m_size), _capacity{m_size << 1}
     {
         _objects = new Object[_capacity];
     }
@@ -51,14 +54,14 @@ public:
 
     void resize(std::size_t m_size)
     {
-        if (m_size > _capacity)
-            std::reserve(m_size * 2);
+        if (m_size >= _capacity)
+            reserve(m_size << 1);
         _size = m_size;
     }
 
     void reserve(std::size_t m_capacity)
     {
-        if (_capacity < _size)
+        if (m_capacity < _size)
             return;
         Object *t_objects = new Object[m_capacity];
         for (std::size_t idx = 0; idx < _size; ++idx)
