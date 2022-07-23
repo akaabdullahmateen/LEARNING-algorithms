@@ -98,6 +98,9 @@ Thumbs.db
 *.a
 *.lib
 
+# VS Code Config
+.vscode/
+
 # Executables
 *.exe
 *.out
